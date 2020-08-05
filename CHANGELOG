@@ -1,0 +1,8 @@
+# v0.0.1
+
+## Features:
+  
+  - Added messagebird message send function
+  - Configuration through json file
+  - Add regexp to filter logs messages
+  - Readme instructions

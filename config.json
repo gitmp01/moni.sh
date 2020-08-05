@@ -1,0 +1,6 @@
+{
+  "ACCESS_KEY": "aValidMessageBirdApiKeyHere",
+  "RECIPIENTS": "39NUMB3RH3R3",
+  "ORIGINATOR": "moni.sh",
+  "MESSAGE": "Alert: my code is on fire!"
+}
