@@ -5,6 +5,11 @@ RECIPIENTS=""
 ORIGINATOR=""
 MESSAGE=""
 
+SLEEP_TIME_SECONDS=300
+MAX_DELTA_SECONDS=1200
+
+ts_last_message=0
+
 function read_config() {
   log "Reading configuration at $1"
   configuration_path=$1 
@@ -24,18 +29,27 @@ function log() {
 }
 
 function messagebird_send_sms() {
-  resp=`curl --silent -X POST https://rest.messagebird.com/messages \
-    -H "Authorization: AccessKey $ACCESS_KEY" \
-    -d "recipients=$RECIPIENTS" \
-    -d "originator=$ORIGINATOR" \
-    -d "body=$MESSAGE"`
+  ts=`date +%s`
+  delta=`expr $ts - $ts_last_message`
+  log "delta=$delta"
+  if [[ "$delta" -gt "$MAX_DELTA_SECONDS" ]]; then
+    resp=`curl --silent -X POST https://rest.messagebird.com/messages \
+      -H "Authorization: AccessKey $ACCESS_KEY" \
+      -d "recipients=$RECIPIENTS" \
+      -d "originator=$ORIGINATOR" \
+      -d "body=$MESSAGE"`
+    ts_last_message=`date +%s`
 
-  errors=`echo $resp | jq -c .errors`
-  if [[ $errors == "null" ]]; then
-    href=`echo $resp | jq .href`
-    log "Request to messagebird succeeded! $href"
+    errors=`echo $resp | jq -c .errors`
+    if [[ $errors == "null" ]]; then
+      href=`echo $resp | jq .href`
+      log "Request to messagebird succeeded! $href"
+    else
+      log "Request to messagebird failed! $resp"
+    fi
   else
-    log "Request to messagebird failed! $resp"
+    log "$delta seconds from last message, postponing alert..."
+    sleep $SLEEP_TIME_SECONDS
   fi
 }
 
