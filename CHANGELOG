@@ -1,6 +1,15 @@
-# v0.0.1
+# v0.0.x
 
-## Features:
+## v0.1.1
+
+### Features:
+  
+  - Adds postponing alert configuration
+
+
+## v0.0.1
+
+### Features:
   
   - Added messagebird message send function
   - Configuration through json file
