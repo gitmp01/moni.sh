@@ -56,9 +56,10 @@ function messagebird_send_sms() {
 function main() {
   read_config "./config.json"
   regexp=$1
+  log "Reading regexp $regexp"
   if [ -p /dev/stdin ]; then
     while IFS= read line; do
-      match=`echo ${line} | egrep $regexp`
+      match=$(grep "$regexp" <<< "$line")
       if [[ -n $match ]]; then
         log "Match found! $match"
         messagebird_send_sms 
